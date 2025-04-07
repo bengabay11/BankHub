@@ -1,0 +1,37 @@
+using Dal.Models;
+
+namespace BL.Core
+{
+    public abstract class BankBase(string Name, string Address)
+    {
+        public string Name = Name;
+        public string Address = Address;
+
+        // Transfers and Balance Management
+        public abstract void Deposit(Guid userId, decimal amount);
+
+        public abstract void Withdraw(Guid userId, decimal amount);
+
+        public abstract Transfer Transfer(Guid giverUserId, Guid takerUserId, decimal amount);
+
+        public abstract IEnumerable<Transfer> GetUserTransfers(Guid userId);
+
+        public abstract Transfer GetUserTransfers(Guid userId, Guid transferId);
+
+        // Loans
+
+        // public abstract void IsLoanAllowed(Loan loan);
+
+        // public void Loan()
+
+        // Users Management
+
+        public abstract User GetUser(Guid userId);
+
+        public abstract IEnumerable<User> GetAllUsers();
+
+        public abstract User CreateUser(string name, UserType type);
+
+        public abstract void DeleteUser(Guid userId);
+    }
+}
