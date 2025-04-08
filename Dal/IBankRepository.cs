@@ -19,5 +19,7 @@ namespace Dal
         Transfer? GetTransferById(Guid transferId);
 
         void InsertTransfer(Transfer transfer);
+
+        void DeleteTransfersByUserId(Guid userId);
     }
 }

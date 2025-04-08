@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Identity;
 
 namespace Dal.Models
 {
@@ -9,7 +10,9 @@ namespace Dal.Models
         public UserType Type { get; set; }
 
         // Navigation properties
+        [JsonIgnore] // Avoid circular references in User model
         public ICollection<Transfer> IncomingTransfers { get; set; } = [];
+        [JsonIgnore] // Avoid circular references in User model
         public ICollection<Transfer> OutgoingTransfers { get; set; } = [];
     }
 }

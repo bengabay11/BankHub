@@ -19,13 +19,15 @@ namespace Dal
                 .HasOne(t => t.GiverUser)
                 .WithMany(u => u.OutgoingTransfers)
                 .HasForeignKey(t => t.GiverUserId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Restrict)
+                .IsRequired();
 
             builder.Entity<Transfer>()
                 .HasOne(t => t.TakerUser)
                 .WithMany(u => u.IncomingTransfers)
                 .HasForeignKey(t => t.TakerUserId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Restrict)
+                .IsRequired();
         }
     }
 }

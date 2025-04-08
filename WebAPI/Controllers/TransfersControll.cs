@@ -25,26 +25,22 @@ public class TransfersController(BankBase bank, UserManager<User> userManager) :
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<Transfer>>> GetUserTransfers()
+    public async Task<ActionResult<List<TransferResponse>>> GetUserTransfers()
     {
         var currentUser = await GetCurrentUser();
-        try
-        {
-            return bank.GetUserTransfers(currentUser.Id).ToList();
-        }
-        catch (UserNotFoundException e)
-        {
-            return NotFound(new { e.Message });
-        }
+        return bank.GetUserTransfers(currentUser.Id)
+            .Select(TransferResponse.FromTransfer)
+            .ToList();
     }
 
     [HttpGet("{transferId}")]
-    public async Task<ActionResult<Transfer>> GetUserTransfer(Guid transferId)
+    public async Task<ActionResult<TransferResponse>> GetUserTransfer(Guid transferId)
     {
         var currentUser = await GetCurrentUser();
         try
         {
-            return bank.GetUserTransfers(currentUser.Id, transferId);
+            var transfer = bank.GetUserTransfer(currentUser.Id, transferId);
+            return TransferResponse.FromTransfer(transfer);
         }
         catch (Exception e) when (e is NotUserTransferException || e is TransferNotFoundException)
         {
@@ -53,7 +49,7 @@ public class TransfersController(BankBase bank, UserManager<User> userManager) :
     }
 
     [HttpPost]
-    public async Task<ActionResult<Transfer>> CreateTransfer([FromBody] CreateTransferBody createTransferBody)
+    public async Task<ActionResult<TransferResponse>> CreateTransfer([FromBody] CreateTransferBody createTransferBody)
     {
         var currentUser = await GetCurrentUser();
 
@@ -64,7 +60,11 @@ public class TransfersController(BankBase bank, UserManager<User> userManager) :
                 createTransferBody.TakerUserId,
                 createTransferBody.Amount
             );
-            return CreatedAtAction(nameof(GetUserTransfer), new { transferId = transfer.Id }, transfer);
+            return CreatedAtAction(
+                nameof(GetUserTransfer),
+                new { transferId = transfer.Id },
+                TransferResponse.FromTransfer(transfer)
+            );
         }
         catch (UserNotFoundException e)
         {

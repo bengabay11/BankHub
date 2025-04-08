@@ -1,10 +1,8 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace Dal.Models
 {
     public class Transfer
     {
-        public Guid Id { get; set; }
+        public required Guid Id { get; set; }
 
         // Foreign keys
         public required Guid GiverUserId { get; init; }

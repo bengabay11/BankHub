@@ -36,8 +36,8 @@ public class Bank(string Name, string Address, IBankRepository bankRepository) :
         ValidatePositiveAmount(amount, "withdraw");
 
         User user = GetUser(userId);
-        decimal minimumBalanceRequired = -200000;
-        if ((user.Balance - amount) < minimumBalanceRequired) // TODO: Move magic number to config
+        decimal minimumBalanceRequired = -200000; // TODO: Move magic number to config
+        if ((user.Balance - amount) < minimumBalanceRequired)
         {
             throw new InsufficientBalanceException(user.Balance, amount, minimumBalanceRequired);
         }
@@ -72,11 +72,10 @@ public class Bank(string Name, string Address, IBankRepository bankRepository) :
 
     public override IEnumerable<Transfer> GetUserTransfers(Guid userId)
     {
-        User user = GetUser(userId);
-        return user.IncomingTransfers.Concat(user.OutgoingTransfers);
+        return bankRepository.GetTransfersByUserId(userId);
     }
 
-    public override Transfer GetUserTransfers(Guid userId, Guid transferId)
+    public override Transfer GetUserTransfer(Guid userId, Guid transferId)
     {
         Transfer transfer = bankRepository.GetTransferById(transferId) ?? throw new TransferNotFoundException(transferId);
         if (transfer.GiverUserId == userId || transfer.TakerUserId == transferId)
@@ -91,9 +90,7 @@ public class Bank(string Name, string Address, IBankRepository bankRepository) :
 
     public override IEnumerable<User> GetAllUsers()
     {
-        var x = bankRepository.GetAllUsers();
-        System.Console.WriteLine(x);
-        return x;
+        return bankRepository.GetAllUsers();
     }
 
     public override User CreateUser(string name, UserType type)
@@ -113,6 +110,7 @@ public class Bank(string Name, string Address, IBankRepository bankRepository) :
 
     public override void DeleteUser(Guid userId)
     {
+        bankRepository.DeleteTransfersByUserId(userId);
         bankRepository.DeleteUser(userId);
     }
 }

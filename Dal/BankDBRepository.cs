@@ -1,4 +1,5 @@
 using Dal.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Dal
 {
@@ -39,17 +40,33 @@ namespace Dal
 
         public IEnumerable<Transfer> GetTransfersByUserId(Guid userId)
         {
-            return dbContext.Transfers.Where(t => t.GiverUserId == userId || t.TakerUserId == userId);
+            return [.. dbContext.Transfers
+                .Include(t => t.GiverUser)
+                .Include(t => t.TakerUser)
+                .Where(t => t.GiverUserId == userId || t.TakerUserId == userId)
+            ];
         }
 
         public Transfer? GetTransferById(Guid transferId)
         {
-            return dbContext.Transfers.Find(transferId);
+            return dbContext.Transfers
+                .Include(t => t.GiverUser)
+                .Include(t => t.TakerUser)
+                .FirstOrDefault(t => t.Id == transferId);
         }
 
         public void InsertTransfer(Transfer transfer)
         {
             dbContext.Transfers.Add(transfer);
+            dbContext.SaveChanges();
+        }
+
+        public void DeleteTransfersByUserId(Guid userId)
+        {
+            var transfersToDelete = dbContext.Transfers
+                .Where(t => t.GiverUserId == userId || t.TakerUserId == userId)
+                .ToList();
+            dbContext.Transfers.RemoveRange(transfersToDelete);
             dbContext.SaveChanges();
         }
     }

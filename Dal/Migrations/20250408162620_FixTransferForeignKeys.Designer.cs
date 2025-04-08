@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Dal.Migrations
 {
     [DbContext(typeof(BankDbContext))]
-    [Migration("20250407200237_FixTransferForeignKeys")]
+    [Migration("20250408162620_FixTransferForeignKeys")]
     partial class FixTransferForeignKeys
     {
         /// <inheritdoc />
@@ -43,17 +43,11 @@ namespace Dal.Migrations
                     b.Property<Guid>("TakerUserId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("UserId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("UserId1")
-                        .HasColumnType("uuid");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("GiverUserId");
 
-                    b.HasIndex("UserId1");
+                    b.HasIndex("TakerUserId");
 
                     b.ToTable("Transfers");
                 });
@@ -281,13 +275,21 @@ namespace Dal.Migrations
 
             modelBuilder.Entity("Dal.Models.Transfer", b =>
                 {
-                    b.HasOne("Dal.Models.User", null)
-                        .WithMany("IncomingTransfers")
-                        .HasForeignKey("UserId");
-
-                    b.HasOne("Dal.Models.User", null)
+                    b.HasOne("Dal.Models.User", "GiverUser")
                         .WithMany("OutgoingTransfers")
-                        .HasForeignKey("UserId1");
+                        .HasForeignKey("GiverUserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Dal.Models.User", "TakerUser")
+                        .WithMany("IncomingTransfers")
+                        .HasForeignKey("TakerUserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("GiverUser");
+
+                    b.Navigation("TakerUser");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>

@@ -16,7 +16,7 @@ namespace BL.Core
 
         public abstract IEnumerable<Transfer> GetUserTransfers(Guid userId);
 
-        public abstract Transfer GetUserTransfers(Guid userId, Guid transferId);
+        public abstract Transfer GetUserTransfer(Guid userId, Guid transferId);
 
         // Loans
 
