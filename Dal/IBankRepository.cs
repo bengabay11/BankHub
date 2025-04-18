@@ -10,6 +10,8 @@ namespace Dal
 
         User? GetUserById(Guid userId);
 
+        User? GetUserByName(string name);
+
         void DeleteUser(Guid userId);
 
         IEnumerable<User> GetAllUsers();

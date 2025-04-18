@@ -113,4 +113,14 @@ public class Bank(string Name, string Address, IBankRepository bankRepository) :
         bankRepository.DeleteTransfersByUserId(userId);
         bankRepository.DeleteUser(userId);
     }
+
+    public override IEnumerable<BalanceUpdate> GetUserBalanceHistory(Guid userId)
+    {
+        return bankRepository.GetBalanceUpdatesByUserId(userId);
+    }
+
+    public override User? GetUserByName(string name)
+    {
+        return bankRepository.GetUserByName(name);
+    }
 }

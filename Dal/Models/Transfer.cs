@@ -11,7 +11,7 @@ namespace Dal.Models
         public required Guid TakerUserId { get; init; }
 
         // Navigation properties
-        public User? GiverUser { get; set; }
-        public User? TakerUser { get; set; }
+        public User GiverUser { get; set; }
+        public User TakerUser { get; set; }
     }
 }

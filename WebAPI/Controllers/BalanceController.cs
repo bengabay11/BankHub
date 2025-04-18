@@ -24,7 +24,7 @@ public class BalanceController(BankBase bank, UserManager<User> userManager) : C
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<Transfer>>> GetUserBalance()
+    public async Task<ActionResult<GetUserBalanceResponse>> GetUserBalance()
     {
         var currentUser = await GetCurrentUser();
         return Ok(new GetUserBalanceResponse { Balance = currentUser.Balance });
@@ -58,5 +58,12 @@ public class BalanceController(BankBase bank, UserManager<User> userManager) : C
         {
             return BadRequest(new { e.Message });
         }
+    }
+
+    [HttpGet("History")]
+    public async Task<ActionResult<List<BalanceUpdate>>> History()
+    {
+        var currentUser = await GetCurrentUser();
+        return _bank.GetUserBalanceHistory(currentUser.Id).ToList();
     }
 }

@@ -16,17 +16,15 @@ namespace BL.Core
 
         public abstract IEnumerable<Transfer> GetUserTransfers(Guid userId);
 
+        public abstract IEnumerable<BalanceUpdate> GetUserBalanceHistory(Guid userId);
+
         public abstract Transfer GetUserTransfer(Guid userId, Guid transferId);
-
-        // Loans
-
-        // public abstract void IsLoanAllowed(Loan loan);
-
-        // public void Loan()
 
         // Users Management
 
         public abstract User GetUser(Guid userId);
+
+        public abstract User? GetUserByName(string name);
 
         public abstract IEnumerable<User> GetAllUsers();
 

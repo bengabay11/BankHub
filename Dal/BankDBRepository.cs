@@ -83,5 +83,11 @@ namespace Dal
                 .Where(t => t.UserId == userId)
             ];
         }
+
+        public User? GetUserByName(string name)
+        {
+            return dbContext.BankUsers.Where(user => user.DisplayName == name).First();
+        }
+
     }
 }

@@ -3,6 +3,7 @@ using BL.Core.Exceptions;
 using Dal.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using BL;
 
 namespace WebAPI.Controllers;
 
@@ -36,5 +37,17 @@ public class UsersController(BankBase bank) : ControllerBase
         GetUser(id);
         _bank.DeleteUser(id);
         return Ok(new { Message = "User deleted successfully" });
+    }
+
+    [HttpGet("search")]
+    public ActionResult<User> SearchUser(string name)
+    {
+        var user = _bank.GetUserByName(name);
+        if (user == null)
+        {
+            return NotFound(new { Message = $"User with the name '{name}' not found." });
+        }
+
+        return user;
     }
 }
