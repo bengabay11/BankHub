@@ -69,5 +69,19 @@ namespace Dal
             dbContext.Transfers.RemoveRange(transfersToDelete);
             dbContext.SaveChanges();
         }
+
+        public void InsertBalanceUpdate(BalanceUpdate balanceUpdate)
+        {
+            dbContext.BalanceUpdates.Add(balanceUpdate);
+            dbContext.SaveChanges();
+        }
+
+        public IEnumerable<BalanceUpdate> GetBalanceUpdatesByUserId(Guid userId)
+        {
+            return [.. dbContext.BalanceUpdates
+                .Include(t => t.User)
+                .Where(t => t.UserId == userId)
+            ];
+        }
     }
 }

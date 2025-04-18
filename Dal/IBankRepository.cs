@@ -21,5 +21,9 @@ namespace Dal
         void InsertTransfer(Transfer transfer);
 
         void DeleteTransfersByUserId(Guid userId);
+
+        void InsertBalanceUpdate(BalanceUpdate balanceUpdate);
+
+        IEnumerable<BalanceUpdate> GetBalanceUpdatesByUserId(Guid userId);
     }
 }

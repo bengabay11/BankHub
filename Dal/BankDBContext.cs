@@ -10,6 +10,7 @@ namespace Dal
     {
         public DbSet<User> BankUsers { get; set; }
         public DbSet<Transfer> Transfers { get; set; }
+        public DbSet<BalanceUpdate> BalanceUpdates { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

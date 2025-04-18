@@ -5,17 +5,13 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Dal.Models;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using System.Text;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.AspNetCore.Identity.UI.Services;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace WebAPI
 {
     public class AppBuilder(string[] args)
     {
         private readonly WebApplicationBuilder _builder = WebApplication.CreateBuilder(args);
+        private static readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
         public WebApplication Build()
         {
@@ -43,8 +39,14 @@ namespace WebAPI
 
             ConfigureAuth();
 
-            // _builder.Services.AddControllers();
-            _builder.Services.AddControllers();  // or AddMvc() for broader support of controllers and views
+            _builder.Services.AddCors(options =>
+            {
+                options.AddPolicy(MyAllowSpecificOrigins, policy =>
+                {
+                    policy.WithOrigins("http://localhost:5173").AllowAnyHeader().AllowAnyMethod();
+                });
+            });
+            _builder.Services.AddControllers();
             _builder.Services.AddEndpointsApiExplorer();
             ConfigureSwagger();
         }
@@ -63,6 +65,7 @@ namespace WebAPI
             app.MapSwagger().RequireAuthorization();
             app.MapControllers();
             app.MapIdentityApi<User>();
+            app.UseCors(MyAllowSpecificOrigins);
         }
 
         private void ConfigureAuth()

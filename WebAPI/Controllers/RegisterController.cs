@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Identity;
 namespace WebAPI.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class RegisterController(UserManager<User> userManager) : ControllerBase
 {
     private readonly UserManager<User> _userManager = userManager;
