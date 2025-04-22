@@ -5,8 +5,8 @@ namespace WebAPI.Models
     public class TransferResponse
     {
         public required Guid Id { get; set; }
-        public required OtherUserResponse GiverUser { get; set; }
-        public required OtherUserResponse TakerUser { get; set; }
+        public required UserResponse GiverUser { get; set; }
+        public required UserResponse TakerUser { get; set; }
         public required decimal Amount { get; init; }
         public required DateTime At { get; init; }
 
@@ -15,8 +15,8 @@ namespace WebAPI.Models
             return new TransferResponse
             {
                 Id = transfer.Id,
-                GiverUser = OtherUserResponse.FromUser(transfer.GiverUser),
-                TakerUser = OtherUserResponse.FromUser(transfer.TakerUser),
+                GiverUser = UserResponse.FromUser(transfer.GiverUser),
+                TakerUser = UserResponse.FromUser(transfer.TakerUser),
                 Amount = transfer.Amount,
                 At = transfer.At
             };
