@@ -1,0 +1,44 @@
+Critical✅
+- Login✅
+- Fix register route to enable additional fields, after that you can delete the route Post /accounts✅
+- Check account cannot transfer to himself✅
+- Add BalanceController✅
+- Transfers Logic✅
+- Fix get user transfers (FK doesnt work)✅
+- add permissions (which routes should be available to each user/admin, user can only act on himself)✅
+
+Nice to Have:
+- Auto generated login page (checked and there is no such thing)✅
+- Switch to postgres✅
+- Create git repo✅
+- Add README.md✅
+
+- Add logger
+- move things to appsettings.json (like db connection string)
+- Format files
+- Add Enum `ErrorReason` for WebAPI and return in each error response that enum and additional debug fields
+- Handle all null dereferences
+- disable /register auto generated route
+- convert BankDBRepository to Async
+
+Even more nice to have:
+- Kind of coins (ils, usd,...)
+- decorators for exceptions in controllers
+- Add custom jwt config in AppBuilder.cs
+- Add Docker compose?
+- Separate Bank to many classes (Loans, Users, Transfers)?
+
+Additional Features:
+- History of withdraw and deposit✅
+- Payment requests (like paybox)
+- Loans logic
+- Credit Cards
+- Scheduled Transfer
+- Admin User Management
+
+Users:
+"email": "admin@gmail.com",
+"password": "AsdAsd1!"
+
+"email": "ben.g@gmasd",
+"password": "AsdAsd1!"
