@@ -6,6 +6,7 @@ using Dal.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
+using WebAPI.Utils;
 
 namespace WebAPI.Controllers;
 
@@ -17,26 +18,20 @@ public class TransfersController(BankBase bank, UserManager<User> userManager) :
     private readonly BankBase bank = bank;
     private readonly UserManager<User> userManager = userManager;
 
-    private async Task<User> GetCurrentUser()
-    {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        return await userManager.FindByIdAsync(userId);
-
-    }
-
     [HttpGet]
     public async Task<ActionResult<List<TransferResponse>>> GetUserTransfers()
     {
-        var currentUser = await GetCurrentUser();
+        var currentUser = await UserUtils.GetCurrentUser(User, userManager);
         return bank.GetUserTransfers(currentUser.Id)
-            .Select(TransferResponse.FromTransfer)
-            .ToList();
+                   .OrderByDescending(t => t.At)
+                   .Select(TransferResponse.FromTransfer)
+                   .ToList();
     }
 
     [HttpGet("{transferId}")]
     public async Task<ActionResult<TransferResponse>> GetUserTransfer(Guid transferId)
     {
-        var currentUser = await GetCurrentUser();
+        var currentUser = await UserUtils.GetCurrentUser(User, userManager);
         try
         {
             var transfer = bank.GetUserTransfer(currentUser.Id, transferId);
@@ -51,7 +46,7 @@ public class TransfersController(BankBase bank, UserManager<User> userManager) :
     [HttpPost]
     public async Task<ActionResult<TransferResponse>> CreateTransfer([FromBody] CreateTransferBody createTransferBody)
     {
-        var currentUser = await GetCurrentUser();
+        var currentUser = await UserUtils.GetCurrentUser(User, userManager);
 
         try
         {

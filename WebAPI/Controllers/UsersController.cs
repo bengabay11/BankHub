@@ -1,53 +1,38 @@
-using BL.Core;
-using BL.Core.Exceptions;
-using Dal.Models;
 using Microsoft.AspNetCore.Mvc;
+using Dal.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
-using BL;
+using WebAPI.Models;
+using WebAPI.Utils;
 
 namespace WebAPI.Controllers;
 
-[Authorize(Roles = "Admin")]
+[Authorize]
 [ApiController]
-[Route("admin/[controller]")]
-public class UsersController(BankBase bank) : ControllerBase
+[Route("api/[controller]")]
+public class UsersController(UserManager<User> userManager) : ControllerBase
 {
-    private readonly BankBase _bank = bank;
+    private readonly UserManager<User> userManager = userManager;
+
+    [HttpGet("current")]
+    public async Task<ActionResult<ExtendedUserResponse>> GetCurrentUserInfo()
+    {
+        var user = await UserUtils.GetCurrentUser(User, userManager);
+        var roles = await userManager.GetRolesAsync(user);
+        
+        var permissions = new List<Permission> { Permission.ViewDashboard };
+        if (roles.Contains("Admin"))
+        {
+            permissions.Add(Permission.ViewAdminDashboard);
+        }
+
+        return ExtendedUserResponse.FromUser(user, [.. permissions]);
+    }
 
     [HttpGet]
-    public ActionResult<List<User>> GetAll() => _bank.GetAllUsers().ToList();
-
-    [HttpGet("{id}")]
-    public ActionResult<User> GetUser(Guid id)
+    public ActionResult<List<UserResponse>> GetAllUsers()
     {
-        try
-        {
-            return _bank.GetUser(id);
-        }
-        catch (NotUserTransferException e)
-        {
-            return NotFound(new { e.Message });
-        }
-    }
-
-    [HttpDelete("{id}")]
-    public IActionResult DeleteUser(Guid id)
-    {
-        // Ignoring result to check if the user exists before deleting it
-        GetUser(id);
-        _bank.DeleteUser(id);
-        return Ok(new { Message = "User deleted successfully" });
-    }
-
-    [HttpGet("search")]
-    public ActionResult<User> SearchUser(string name)
-    {
-        var user = _bank.GetUserByName(name);
-        if (user == null)
-        {
-            return NotFound(new { Message = $"User with the name '{name}' not found." });
-        }
-
-        return user;
+        var users = userManager.Users.ToList();
+        return users.Select(UserResponse.FromUser).ToList();
     }
 }
