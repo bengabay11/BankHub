@@ -43,7 +43,10 @@ namespace WebAPI
             {
                 options.AddPolicy(MyAllowSpecificOrigins, policy =>
                 {
-                    policy.WithOrigins("http://localhost:5173").AllowAnyHeader().AllowAnyMethod();
+                    policy.WithOrigins("http://localhost:5173")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowCredentials();
                 });
             });
             _builder.Services.AddControllers();
@@ -60,24 +63,16 @@ namespace WebAPI
             }
 
             app.UseHttpsRedirection();
+            app.UseCors(MyAllowSpecificOrigins);
             app.UseAuthentication();
             app.UseAuthorization();
             app.MapSwagger().RequireAuthorization();
             app.MapControllers();
             app.MapIdentityApi<User>();
-            app.UseCors(MyAllowSpecificOrigins);
         }
 
         private void ConfigureAuth()
         {
-            // Working!
-            // _builder.Services.AddIdentityApiEndpoints<User>()
-            //     .AddEntityFrameworkStores<BankDbContext>()
-            //     .AddApiEndpoints();
-            // _builder.Services.AddTransient<IRoleStore<IdentityRole<Guid>>, RoleStore<IdentityRole<Guid>, BankDbContext, Guid>>();
-            // _builder.Services.AddScoped<RoleManager<IdentityRole<Guid>>>();
-
-
             _builder.Services.AddAuthentication().AddBearerToken(IdentityConstants.BearerScheme);
             _builder.Services.AddAuthorizationBuilder();
 
