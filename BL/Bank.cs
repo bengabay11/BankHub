@@ -17,21 +17,37 @@ public class Bank(string Name, string Address, IBankRepository bankRepository) :
         }
     }
 
+    private BalanceUpdate CreateBalanceUpdate(User user, decimal amount, BalanceActionType action)
+    {
+        var balanceUpdate = new BalanceUpdate
+        {
+            Id = Guid.NewGuid(),
+            UserId = user.Id,
+            Action = action,
+            Amount = amount,
+            At = DateTime.Now.ToUniversalTime(),
+            BalanceAfter = user.Balance
+        };
+        bankRepository.InsertBalanceUpdate(balanceUpdate);
+        return balanceUpdate;
+    }
+
     public override User GetUser(Guid userId)
     {
         return bankRepository.GetUserById(userId) ?? throw new UserNotFoundException(userId);
     }
 
-    public override void Deposit(Guid userId, decimal amount)
+    public override BalanceUpdate Deposit(Guid userId, decimal amount)
     {
         ValidatePositiveAmount(amount, "deposit");
 
         User user = GetUser(userId);
         user.Balance += amount;
         bankRepository.UpdateUser(user);
+        return CreateBalanceUpdate(user, amount, BalanceActionType.Deposit);
     }
 
-    public override void Withdraw(Guid userId, decimal amount)
+    public override BalanceUpdate Withdraw(Guid userId, decimal amount)
     {
         ValidatePositiveAmount(amount, "withdraw");
 
@@ -43,6 +59,7 @@ public class Bank(string Name, string Address, IBankRepository bankRepository) :
         }
         user.Balance -= amount;
         bankRepository.UpdateUser(user);
+        return CreateBalanceUpdate(user, amount, BalanceActionType.Withdrawal);
     }
 
     public override Transfer Transfer(Guid giverUserId, Guid takerUserId, decimal amount)

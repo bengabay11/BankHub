@@ -8,9 +8,9 @@ namespace BL.Core
         public string Address = Address;
 
         // Transfers and Balance Management
-        public abstract void Deposit(Guid userId, decimal amount);
+        public abstract BalanceUpdate Deposit(Guid userId, decimal amount);
 
-        public abstract void Withdraw(Guid userId, decimal amount);
+        public abstract BalanceUpdate Withdraw(Guid userId, decimal amount);
 
         public abstract Transfer Transfer(Guid giverUserId, Guid takerUserId, decimal amount);
 
