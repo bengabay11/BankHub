@@ -3,7 +3,9 @@ name: Build and publish Docker image
 on:
   pull_request:
   push:
-    branches: [master, main]
+    branches:
+      - master
+      - main
 
 jobs:
   build:
@@ -11,26 +13,18 @@ jobs:
     permissions:
       contents: read
       packages: write
-
     steps:
       - uses: actions/checkout@v4
-
-      # Compute a lowercase image name and expose it as a step output
-      - name: Compute image name (lowercased)
-        id: vars
-        run: echo "image_name=ghcr.io/${GITHUB_REPOSITORY,,}" >> "$GITHUB_OUTPUT"
-
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Build and (conditionally) push image
+      - name: Build and push image
         uses: docker/build-push-action@v5
         with:
-          push: true
+          push: ${{ github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master') }}
           tags: |
-            ${{ steps.vars.outputs.image_name }}:${{ github.sha }}
-            ${{ steps.vars.outputs.image_name }}:latest
+            ghcr.io/bankhub:${{ github.sha }}
+            ghcr.io/bankhub:latest
