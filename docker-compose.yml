@@ -4,7 +4,7 @@ services:
   webapi:
     image: ghcr.io/bengabay11/bankhub:latest
     ports:
-      - "5000:80"
+      - "80:80"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=BankHub;Username=postgres;Password=yourpassword
