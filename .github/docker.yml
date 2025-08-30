@@ -30,7 +30,7 @@ jobs:
       - name: Build and (conditionally) push image
         uses: docker/build-push-action@v5
         with:
-          push: ${{ github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master') }}
+          push: true
           tags: |
             ${{ steps.vars.outputs.image_name }}:${{ github.sha }}
             ${{ steps.vars.outputs.image_name }}:latest
