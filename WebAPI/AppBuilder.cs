@@ -43,10 +43,20 @@ namespace WebAPI
             {
                 options.AddPolicy(MyAllowSpecificOrigins, policy =>
                 {
-                    policy.WithOrigins("http://localhost:5173")
-                        .AllowAnyHeader()
-                        .AllowAnyMethod()
-                        .AllowCredentials();
+                    var allowedHosts = _builder.Configuration["AllowedHosts"] ?? "*";
+                    if (allowedHosts == "*")
+                    {
+                        policy.AllowAnyOrigin()
+                            .AllowAnyHeader()
+                            .AllowAnyMethod();
+                    }
+                    else
+                    {
+                        policy.WithOrigins(allowedHosts.Split(';'))
+                            .AllowAnyHeader()
+                            .AllowAnyMethod()
+                            .AllowCredentials();
+                    }
                 });
             });
             _builder.Services.AddControllers();

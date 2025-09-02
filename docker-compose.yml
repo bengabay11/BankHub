@@ -1,0 +1,39 @@
+version: "3.8"
+
+services:
+  webapi:
+    image: ghcr.io/bengabay11/bankhub:latest
+    ports:
+      - "80:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=BankHub;Username=postgres;Password=yourpassword
+    depends_on:
+      - db
+    networks:
+      - bankhub-network
+
+  db:
+    image: postgres:15
+    environment:
+      - POSTGRES_DB=BankHub
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=yourpassword
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - bankhub-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  bankhub-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
