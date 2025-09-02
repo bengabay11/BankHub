@@ -50,36 +50,34 @@
 3. Run the application:
 
    ```bash
-   dotnet run
+   dotnet run --project WebAPI
    ```
 
-4. Access the API documentation at [http:/localhost:5000/swagger](http:/localhost:5209/swagger)
+4. Access the API documentation at [http:/localhost:5209/swagger](http:/localhost:5209/swagger)
 
 ## 🐳 Docker
 
-### Running with Docker
+### Running with Docker Compose
 
-You can run BankHub using Docker. This is the easiest way to get started with the application.
+You can run BankHub using Docker Compose for easier multi-service orchestration.
 
-1. Pull the latest image from GitHub Container Registry:
+1. Make sure you have Docker and Docker Compose installed.
 
-   ```bash
-   docker pull ghcr.io/bengabay11/bankhub:latest
-   ```
-
-   Or build the image locally:
+2. Start the services using the provided `docker-compose.yml`:
 
    ```bash
-   docker build -t bankhub .
+   docker compose up -d
    ```
 
-2. Run the container:
+   This will build and start all necessary containers as defined in `docker-compose.yml`.
+
+3. To stop the services:
 
    ```bash
-   docker run -d -p 5209:80 --name bankhub bankhub
+   docker compose down
    ```
 
-The application will be available at [http://localhost:5209](http://localhost:5209) with Swagger UI at [http://localhost:5209/swagger](http://localhost:5209/swagger).
+The application will be available at [http://localhost](http://localhost) with Swagger UI at [http://localhost/swagger](http://localhost/swagger).
 
 ### Container Registry
 
